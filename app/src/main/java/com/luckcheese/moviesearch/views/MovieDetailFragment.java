@@ -1,8 +1,8 @@
 package com.luckcheese.moviesearch.views;
 
 import android.app.Activity;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,14 +38,29 @@ public class MovieDetailFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_detail, container, false);
+    public void onStart() {
+        super.onStart();
+        populateView();
+    }
 
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getPlot());
-        }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.movie_detail, container, false);
+    }
 
-        return rootView;
+    private void populateView() {
+        View fragView = getView();
+
+        ((TextView) fragView.findViewById(R.id.plot)).setText(mItem.getPlot());
+
+        ((MovieInfoRow) fragView.findViewById(R.id.actors)).setInfo(mItem.getActors());
+        ((MovieInfoRow) fragView.findViewById(R.id.directors)).setInfo(mItem.getDirector());
+        ((MovieInfoRow) fragView.findViewById(R.id.writers)).setInfo(mItem.getWriter());
+        ((MovieInfoRow) fragView.findViewById(R.id.releaseDate)).setInfo(mItem.getReleased());
+        ((MovieInfoRow) fragView.findViewById(R.id.duration)).setInfo(mItem.getRuntime());
+        ((MovieInfoRow) fragView.findViewById(R.id.genre)).setInfo(mItem.getGenre());
+        ((MovieInfoRow) fragView.findViewById(R.id.metascore)).setInfo(mItem.getMetascore());
+        ((MovieInfoRow) fragView.findViewById(R.id.awards)).setInfo(mItem.getAwards());
+        ((MovieInfoRow) fragView.findViewById(R.id.country)).setInfo(mItem.getCountry());
     }
 }
