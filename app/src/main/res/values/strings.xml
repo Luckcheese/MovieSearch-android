@@ -6,5 +6,6 @@
     <string name="movie_details_plot_label">Sinopse:</string>
     <string name="movie_card_details_button">Detalhes</string>
 
+    <string name="share_menu_title">Compartilhar</string>
     <string name="share_not_supported">Compartilhamento não suportado (%1Ss)</string>
 </resources>
