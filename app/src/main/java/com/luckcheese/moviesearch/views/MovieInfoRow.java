@@ -51,6 +51,10 @@ public class MovieInfoRow extends FrameLayout {
         try {
             int imageRes = a.getResourceId(R.styleable.MovieInfoRow_infoImage, R.mipmap.ic_launcher);
             setImage(imageRes);
+
+            if (isInEditMode()) {
+                setInfo("Fake text to show on layout preview");
+            }
         } finally {
             a.recycle();
         }
