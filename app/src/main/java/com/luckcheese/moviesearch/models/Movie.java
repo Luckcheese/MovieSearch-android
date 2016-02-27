@@ -2,9 +2,7 @@ package com.luckcheese.moviesearch.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class Movie implements Serializable {
+public class Movie extends BaseRequestResponse {
 
     @SerializedName("Title") private String title;
     @SerializedName("Year") private String year;
