@@ -17,8 +17,9 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     private TextView titleView;
     private TextView plotView;
 
-    public ViewHolder(View view) {
+    public ViewHolder(View view, CardListener listener) {
         super(view);
+        this.listener = listener;
 
         posterView = (ImageView) view.findViewById(R.id.poster);
         titleView = (TextView) view.findViewById(R.id.title);

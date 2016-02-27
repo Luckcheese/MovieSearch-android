@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.luckcheese.moviesearch.R;
 import com.luckcheese.moviesearch.domain.FakeServer;
@@ -17,7 +18,7 @@ import com.luckcheese.moviesearch.views.holder.ViewHolder;
 
 import java.util.List;
 
-public class MovieListActivity extends AppCompatActivity {
+public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener {
 
     private boolean mTwoPane;
 
@@ -43,6 +44,20 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, FakeServer.search()));
     }
 
+    // ----- ViewHolder.CardListener ------------------------------------------
+
+    @Override
+    public void onDetailsRequested(MovieSearchResult movie) {
+        Toast.makeText(this, "Clicked " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShareRequested(MovieSearchResult movie) {
+        Toast.makeText(this, "Clicked " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    // ----- Related classes --------------------------------------------------
+
     public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private LayoutInflater inflater;
@@ -56,7 +71,7 @@ public class MovieListActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = inflater.inflate(R.layout.movie_list_content, parent, false);
-            return new ViewHolder(view);
+            return new ViewHolder(view, MovieListActivity.this);
         }
 
         @Override
