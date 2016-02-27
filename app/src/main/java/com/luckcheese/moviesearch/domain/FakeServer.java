@@ -3,8 +3,8 @@ package com.luckcheese.moviesearch.domain;
 import com.google.gson.Gson;
 import com.luckcheese.moviesearch.models.Movie;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
+import com.luckcheese.moviesearch.models.SearchResult;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class FakeServer {
@@ -13,7 +13,7 @@ public class FakeServer {
     private static String detailedResultJson = "{\"Title\":\"Finding Nemo\",\"Year\":\"2003\",\"Rated\":\"G\",\"Released\":\"30 May 2003\",\"Runtime\":\"100 min\",\"Genre\":\"Animation, Adventure, Comedy\",\"Director\":\"Andrew Stanton, Lee Unkrich\",\"Writer\":\"Andrew Stanton (original story by), Andrew Stanton (screenplay), Bob Peterson (screenplay), David Reynolds (screenplay)\",\"Actors\":\"Albert Brooks, Ellen DeGeneres, Alexander Gould, Willem Dafoe\",\"Plot\":\"After his son is captured in the Great Barrier Reef and taken to Sydney, a timid clownfish sets out on a journey to bring him home.\",\"Language\":\"English\",\"Country\":\"USA\",\"Awards\":\"Won 1 Oscar. Another 44 wins & 56 nominations.\",\"Poster\":\"http://ia.media-imdb.com/images/M/MV5BMTY1MTg1NDAxOV5BMl5BanBnXkFtZTcwMjg1MDI5Nw@@._V1_SX300.jpg\",\"Metascore\":\"90\",\"imdbRating\":\"8.1\",\"imdbVotes\":\"644,319\",\"imdbID\":\"tt0266543\",\"Type\":\"movie\",\"Response\":\"True\"}\n";
 
     public static List<MovieSearchResult> search() {
-        return Arrays.asList(gson().fromJson(searchResultJson, MovieSearchResult[].class));
+        return gson().fromJson(searchResultJson, SearchResult.class).getSearch();
     }
 
     public static Movie details(String itemId) {

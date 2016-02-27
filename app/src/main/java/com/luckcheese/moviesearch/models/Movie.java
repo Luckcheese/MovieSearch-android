@@ -1,27 +1,31 @@
 package com.luckcheese.moviesearch.models;
 
-public class Movie {
+import com.google.gson.annotations.SerializedName;
 
-    private String title;
-    private String year;
-    private String rated;
-    private String released;
-    private String runtime;
-    private String genre;
-    private String director;
-    private String writer;
-    private String actors;
-    private String plot;
-    private String language;
-    private String country;
-    private String awards;
-    private String poster;
-    private String metascore;
-    private String imdbRating;
-    private String imdbVotes;
-    private String imdbID;
-    private String type;
-    private String response;
+import java.io.Serializable;
+
+public class Movie implements Serializable {
+
+    @SerializedName("Title") private String title;
+    @SerializedName("Year") private String year;
+    @SerializedName("Rated") private String rated;
+    @SerializedName("Released") private String released;
+    @SerializedName("Runtime") private String runtime;
+    @SerializedName("Genre") private String genre;
+    @SerializedName("Director") private String director;
+    @SerializedName("Writer") private String writer;
+    @SerializedName("Actors") private String actors;
+    @SerializedName("Plot") private String plot;
+    @SerializedName("Language") private String language;
+    @SerializedName("Country") private String country;
+    @SerializedName("Awards") private String awards;
+    @SerializedName("Poster") private String poster;
+    @SerializedName("Metascore") private String metascore;
+    @SerializedName("imdbRating") private String imdbRating;
+    @SerializedName("imdbVotes") private String imdbVotes;
+    @SerializedName("imdbID") private String imdbID;
+    @SerializedName("Type") private String type;
+    @SerializedName("Response") private String response;
 
     public String getTitle() {
         return title;
