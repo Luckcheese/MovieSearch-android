@@ -36,6 +36,8 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
         }
+
+        findViewById(R.id.movie_list).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -93,6 +95,9 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
     public void setSearchResult(List<MovieSearchResult> searchResult) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movie_list);
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, searchResult));
+        recyclerView.setVisibility(View.VISIBLE);
+
+        findViewById(R.id.blankState).setVisibility(View.INVISIBLE);
     }
 
     @Override

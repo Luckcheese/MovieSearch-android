@@ -10,4 +10,5 @@
     <string name="share_not_supported">Compartilhamento não suportado (%1Ss)</string>
 
     <string name="search_menu_title">Busque um filme</string>
+    <string name="search_empty_disclaimer">Para buscar um filme é simples, basta digitar o título no campo de busca.</string>
 </resources>
