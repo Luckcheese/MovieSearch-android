@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.luckcheese.moviesearch.R;
 import com.luckcheese.moviesearch.domain.Search;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
+import com.luckcheese.moviesearch.views.holder.HeaderViewHolder;
 import com.luckcheese.moviesearch.views.holder.MovieCardViewHolder;
 
 import java.util.Collections;
@@ -124,7 +125,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieCardVie
 
     // ----- Related classes --------------------------------------------------
 
-    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<MovieCardViewHolder> {
+    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private LayoutInflater inflater;
         private List<MovieSearchResult> mValues;
@@ -135,14 +136,24 @@ public class MovieListActivity extends AppCompatActivity implements MovieCardVie
         }
 
         @Override
-        public MovieCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.movie_list_content, parent, false);
-            return new MovieCardViewHolder(view, MovieListActivity.this);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 0) {
+                return new HeaderViewHolder(inflater.getContext());
+            }
+            else {
+                View view = inflater.inflate(R.layout.movie_list_content, parent, false);
+                return new MovieCardViewHolder(view, MovieListActivity.this);
+            }
         }
 
         @Override
-        public void onBindViewHolder(final MovieCardViewHolder holder, int position) {
-            holder.setItem(mValues.get(position));
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+            if (holder.getItemViewType() == 0) {
+                ((HeaderViewHolder) holder).setTotalResults(currentSearch.getTotal());
+            }
+            else {
+                ((MovieCardViewHolder) holder).setItem(mValues.get(position));
+            }
 
             if (position == getItemCount() - 1) {
                 currentSearch.nextPage();
@@ -152,6 +163,11 @@ public class MovieListActivity extends AppCompatActivity implements MovieCardVie
         @Override
         public int getItemCount() {
             return mValues.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position == 0 ? 0 : 1;
         }
 
         public void setValues(List<MovieSearchResult> values) {

@@ -11,4 +11,6 @@
 
     <string name="search_menu_title">Busque um filme</string>
     <string name="search_empty_disclaimer">Para buscar um filme é simples, basta digitar o título no campo de busca.</string>
+
+    <string name="search_total_results">Encontramos BB%02d resultadosBB:</string>
 </resources>

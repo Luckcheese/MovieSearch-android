@@ -55,6 +55,10 @@ public class Search {
         return result;
     }
 
+    public int getTotal() {
+        return totalResults;
+    }
+
     // ----- Related classes --------------------------------------------------
 
     public interface SearchListener {
