@@ -25,7 +25,6 @@ public class Movie implements Serializable {
     @SerializedName("imdbVotes") private String imdbVotes;
     @SerializedName("imdbID") private String imdbID;
     @SerializedName("Type") private String type;
-    @SerializedName("Response") private String response;
 
     public String getTitle() {
         return title;
@@ -101,9 +100,5 @@ public class Movie implements Serializable {
 
     public String getType() {
         return type;
-    }
-
-    public String getResponse() {
-        return response;
     }
 }
