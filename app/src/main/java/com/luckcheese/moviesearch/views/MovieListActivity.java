@@ -14,23 +14,28 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.luckcheese.moviesearch.R;
-import com.luckcheese.moviesearch.domain.Server;
+import com.luckcheese.moviesearch.domain.Search;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
+import com.luckcheese.moviesearch.models.SearchResult;
 import com.luckcheese.moviesearch.views.holder.ViewHolder;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener, Server.SearchCallback {
+
+public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener, Search.SearchListener {
 
     private boolean mTwoPane;
 
     private SimpleItemRecyclerViewAdapter adapter;
+    private Search currentSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        currentSearch = new Search();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,7 +56,12 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Server.getInstance().search(query, MovieListActivity.this);
+                currentSearch.initWithQuery(query, MovieListActivity.this);
+                currentSearch.nextPage();
+
+                adapter = new SimpleItemRecyclerViewAdapter(MovieListActivity.this, currentSearch.getResult());
+                ((RecyclerView) findViewById(R.id.movie_list)).setAdapter(adapter);
+                adapter.notifyDataSetChanged();
 
                 searchView.clearFocus();
                 return true;
@@ -92,31 +102,20 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         Toast.makeText(this, getString(R.string.share_not_supported, movie.getTitle()), Toast.LENGTH_SHORT).show();
     }
 
-    // ----- Server.SearchCallback --------------------------------------------
+    // ----- Search.SearchListener --------------------------------------------
 
     @Override
-    public void setSearchResult(List<MovieSearchResult> searchResult) {
-        if (adapter == null) {
-            adapter = new SimpleItemRecyclerViewAdapter(this, searchResult);
-        }
-        else {
-            adapter.setValues(searchResult);
-        }
+    public void onNextPageSuccess() {
         adapter.notifyDataSetChanged();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movie_list);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setVisibility(View.VISIBLE);
-
+        findViewById(R.id.movie_list).setVisibility(View.VISIBLE);
         findViewById(R.id.blankState).setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void setRequestError(Throwable t) {
-        if (adapter != null) {
-            adapter.setValues(Collections.<MovieSearchResult>emptyList());
-            adapter.notifyDataSetChanged();
-        }
+    public void onNextPageError(Throwable t) {
+        adapter.setValues(Collections.<MovieSearchResult>emptyList());
+        adapter.notifyDataSetChanged();
 
         findViewById(R.id.movie_list).setVisibility(View.INVISIBLE);
         findViewById(R.id.blankState).setVisibility(View.VISIBLE);
@@ -145,6 +144,15 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.setItem(mValues.get(position));
+
+            if (position == getItemCount() - 1) {
+                currentSearch.nextPage();
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position == 0 ? 0 : 1;
         }
 
         @Override
@@ -156,4 +164,5 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
             this.mValues = values;
         }
     }
+
 }

@@ -2,12 +2,10 @@ package com.luckcheese.moviesearch.domain;
 
 import com.luckcheese.moviesearch.models.BaseRequestResponse;
 import com.luckcheese.moviesearch.models.Movie;
-import com.luckcheese.moviesearch.models.MovieSearchResult;
 import com.luckcheese.moviesearch.models.SearchResult;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -22,14 +20,15 @@ public class Server {
 
     private ImdbRequests requests;
 
-    public void search(String query, final SearchCallback callback) {
+    public void search(String query, int page, final SearchCallback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("s", query);
+        params.put("page", String.valueOf(page));
         requests.search(params).enqueue(new Callback<SearchResult>() {
             @Override
             public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
                 if (onRequestSuccess(response, callback)) {
-                    callback.setSearchResult(response.body().getSearch());
+                    callback.setSearchResult(response.body());
                 }
             }
 
@@ -105,7 +104,7 @@ public class Server {
     }
 
     public interface SearchCallback extends RequestError {
-        void setSearchResult(List<MovieSearchResult> searchResult);
+        void setSearchResult(SearchResult searchResult);
     }
 
     public interface DetailsCallback extends RequestError {
