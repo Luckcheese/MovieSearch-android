@@ -1,9 +1,11 @@
 package com.luckcheese.moviesearch.domain;
 
+import com.luckcheese.moviesearch.models.BaseRequestResponse;
 import com.luckcheese.moviesearch.models.Movie;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
 import com.luckcheese.moviesearch.models.SearchResult;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +28,8 @@ public class Server {
         requests.search(params).enqueue(new Callback<SearchResult>() {
             @Override
             public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
-                if (response.isSuccess()) {
+                if (onRequestSuccess(response, callback)) {
                     callback.setSearchResult(response.body().getSearch());
-                }
-                else {
-                    callback.setRequestError(null);
                 }
             }
 
@@ -47,11 +46,8 @@ public class Server {
         requests.details(params).enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if (response.isSuccess()) {
+                if (onRequestSuccess(response, callback)) {
                     callback.setMovieDetails(response.body());
-                }
-                else {
-                    callback.setRequestError(null);
                 }
             }
 
@@ -60,6 +56,26 @@ public class Server {
                 callback.setRequestError(t);
             }
         });
+    }
+
+    private boolean onRequestSuccess(Response<? extends BaseRequestResponse> response, RequestError callback) {
+        BaseRequestResponse imdbResponse = response.body();
+        if (response.isSuccess()) {
+            if (imdbResponse.isSuccess()) {
+                return true;
+            }
+            else {
+                callback.setRequestError(new Exception(imdbResponse.getMessage()));
+            }
+        }
+        else {
+            try {
+                callback.setRequestError(new Exception(response.errorBody().string()));
+            } catch (IOException e) {
+                callback.setRequestError(e);
+            }
+        }
+        return false;
     }
 
     // ----- Singleton --------------------------------------------------------
