@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.luckcheese.moviesearch.R;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
 
-public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class MovieCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private MovieSearchResult movie;
     private CardListener listener;
@@ -17,7 +17,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     private TextView titleView;
     private TextView plotView;
 
-    public ViewHolder(View view, CardListener listener) {
+    public MovieCardViewHolder(View view, CardListener listener) {
         super(view);
         this.listener = listener;
 

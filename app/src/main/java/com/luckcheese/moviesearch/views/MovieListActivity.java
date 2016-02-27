@@ -16,14 +16,13 @@ import android.widget.Toast;
 import com.luckcheese.moviesearch.R;
 import com.luckcheese.moviesearch.domain.Search;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
-import com.luckcheese.moviesearch.models.SearchResult;
-import com.luckcheese.moviesearch.views.holder.ViewHolder;
+import com.luckcheese.moviesearch.views.holder.MovieCardViewHolder;
 
 import java.util.Collections;
 import java.util.List;
 
 
-public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener, Search.SearchListener {
+public class MovieListActivity extends AppCompatActivity implements MovieCardViewHolder.CardListener, Search.SearchListener {
 
     private boolean mTwoPane;
 
@@ -77,7 +76,7 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         return  true;
     }
 
-    // ----- ViewHolder.CardListener ------------------------------------------
+    // ----- MovieCardViewHolder.CardListener ------------------------------------------
 
     @Override
     public void onDetailsRequested(MovieSearchResult movie) {
@@ -125,7 +124,7 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
 
     // ----- Related classes --------------------------------------------------
 
-    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<MovieCardViewHolder> {
 
         private LayoutInflater inflater;
         private List<MovieSearchResult> mValues;
@@ -136,23 +135,18 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MovieCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = inflater.inflate(R.layout.movie_list_content, parent, false);
-            return new ViewHolder(view, MovieListActivity.this);
+            return new MovieCardViewHolder(view, MovieListActivity.this);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final MovieCardViewHolder holder, int position) {
             holder.setItem(mValues.get(position));
 
             if (position == getItemCount() - 1) {
                 currentSearch.nextPage();
             }
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position == 0 ? 0 : 1;
         }
 
         @Override
