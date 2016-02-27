@@ -18,11 +18,14 @@ import com.luckcheese.moviesearch.domain.Server;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
 import com.luckcheese.moviesearch.views.holder.ViewHolder;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener, Server.SearchCallback {
 
     private boolean mTwoPane;
+
+    private SimpleItemRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +96,16 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
 
     @Override
     public void setSearchResult(List<MovieSearchResult> searchResult) {
+        if (adapter == null) {
+            adapter = new SimpleItemRecyclerViewAdapter(this, searchResult);
+        }
+        else {
+            adapter.setValues(searchResult);
+        }
+        adapter.notifyDataSetChanged();
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movie_list);
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, searchResult));
+        recyclerView.setAdapter(adapter);
         recyclerView.setVisibility(View.VISIBLE);
 
         findViewById(R.id.blankState).setVisibility(View.INVISIBLE);
@@ -102,7 +113,15 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
 
     @Override
     public void setRequestError(Throwable t) {
-        // TODO: treat error
+        if (adapter != null) {
+            adapter.setValues(Collections.<MovieSearchResult>emptyList());
+            adapter.notifyDataSetChanged();
+        }
+
+        findViewById(R.id.movie_list).setVisibility(View.INVISIBLE);
+        findViewById(R.id.blankState).setVisibility(View.VISIBLE);
+
+        Toast.makeText(this, t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     // ----- Related classes --------------------------------------------------
@@ -110,7 +129,7 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
     public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private LayoutInflater inflater;
-        private final List<MovieSearchResult> mValues;
+        private List<MovieSearchResult> mValues;
 
         public SimpleItemRecyclerViewAdapter(Context context, List<MovieSearchResult> items) {
             mValues = items;
@@ -131,6 +150,10 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         @Override
         public int getItemCount() {
             return mValues.size();
+        }
+
+        public void setValues(List<MovieSearchResult> values) {
+            this.mValues = values;
         }
     }
 }
