@@ -13,7 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.luckcheese.moviesearch.R;
-import com.luckcheese.moviesearch.views.dummy.DummyContent;
+import com.luckcheese.moviesearch.domain.FakeServer;
+import com.luckcheese.moviesearch.models.MovieSearchResult;
 
 import java.util.List;
 
@@ -40,15 +41,15 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(FakeServer.search()));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<MovieSearchResult> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<MovieSearchResult> items) {
             mValues = items;
         }
 
@@ -62,15 +63,15 @@ public class MovieListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mYearView.setText(mValues.get(position).getYear());
+            holder.mContentView.setText(mValues.get(position).getTitle());
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.getImdbID());
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -80,7 +81,7 @@ public class MovieListActivity extends AppCompatActivity {
                     else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.getImdbID());
 
                         context.startActivity(intent);
                     }
@@ -95,14 +96,14 @@ public class MovieListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
+            public final TextView mYearView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public MovieSearchResult mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
+                mYearView = (TextView) view.findViewById(R.id.year);
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
 

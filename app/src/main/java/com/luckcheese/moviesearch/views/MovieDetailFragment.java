@@ -10,13 +10,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.luckcheese.moviesearch.R;
-import com.luckcheese.moviesearch.views.dummy.DummyContent;
+import com.luckcheese.moviesearch.domain.FakeServer;
+import com.luckcheese.moviesearch.models.Movie;
 
 public class MovieDetailFragment extends Fragment {
 
     public static final String ARG_ITEM_ID = "item_id";
 
-    private DummyContent.DummyItem mItem;
+    private Movie mItem;
 
     public MovieDetailFragment() {
     }
@@ -26,12 +27,12 @@ public class MovieDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = FakeServer.details(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.getTitle());
             }
         }
     }
@@ -42,7 +43,7 @@ public class MovieDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
 
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getPlot());
         }
 
         return rootView;
