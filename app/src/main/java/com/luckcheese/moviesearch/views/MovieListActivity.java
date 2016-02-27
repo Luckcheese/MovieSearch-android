@@ -1,6 +1,7 @@
 package com.luckcheese.moviesearch.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -48,12 +49,25 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
 
     @Override
     public void onDetailsRequested(MovieSearchResult movie) {
-        Toast.makeText(this, "Clicked " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putString(MovieDetailFragment.ARG_ITEM_ID, movie.getImdbID());
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment)
+                    .commit();
+        }
+        else {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, movie.getImdbID());
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onShareRequested(MovieSearchResult movie) {
-        Toast.makeText(this, "Clicked " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.share_not_supported, movie.getTitle()), Toast.LENGTH_SHORT).show();
     }
 
     // ----- Related classes --------------------------------------------------
