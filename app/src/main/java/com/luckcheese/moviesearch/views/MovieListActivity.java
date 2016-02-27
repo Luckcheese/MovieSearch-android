@@ -13,13 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.luckcheese.moviesearch.R;
-import com.luckcheese.moviesearch.domain.FakeServer;
+import com.luckcheese.moviesearch.domain.Server;
 import com.luckcheese.moviesearch.models.MovieSearchResult;
 import com.luckcheese.moviesearch.views.holder.ViewHolder;
 
 import java.util.List;
 
-public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener {
+public class MovieListActivity extends AppCompatActivity implements ViewHolder.CardListener, Server.SearchCallback {
 
     private boolean mTwoPane;
 
@@ -32,17 +32,16 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        View recyclerView = findViewById(R.id.movie_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, FakeServer.search()));
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Server.getInstance().search("rock", this);
     }
 
     // ----- ViewHolder.CardListener ------------------------------------------
@@ -68,6 +67,19 @@ public class MovieListActivity extends AppCompatActivity implements ViewHolder.C
     @Override
     public void onShareRequested(MovieSearchResult movie) {
         Toast.makeText(this, getString(R.string.share_not_supported, movie.getTitle()), Toast.LENGTH_SHORT).show();
+    }
+
+    // ----- Server.SearchCallback --------------------------------------------
+
+    @Override
+    public void setSearchResult(List<MovieSearchResult> searchResult) {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.movie_list);
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, searchResult));
+    }
+
+    @Override
+    public void setRequestError(Throwable t) {
+        // TODO: treat error
     }
 
     // ----- Related classes --------------------------------------------------

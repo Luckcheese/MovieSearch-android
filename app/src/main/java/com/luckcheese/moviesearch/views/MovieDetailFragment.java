@@ -14,10 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luckcheese.moviesearch.R;
-import com.luckcheese.moviesearch.domain.FakeServer;
+import com.luckcheese.moviesearch.domain.Server;
 import com.luckcheese.moviesearch.models.Movie;
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements Server.DetailsCallback {
 
     public static final String ARG_ITEM_ID = "item_id";
 
@@ -31,22 +31,6 @@ public class MovieDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = FakeServer.details(getArguments().getString(ARG_ITEM_ID));
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.getTitle());
-            }
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        populateView();
     }
 
     @Override
@@ -74,7 +58,22 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (getArguments().containsKey(ARG_ITEM_ID)) {
+            Server.getInstance().details(getArguments().getString(ARG_ITEM_ID), this);
+        }
+    }
+
     private void populateView() {
+        Activity activity = this.getActivity();
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(mItem.getTitle());
+        }
+
         View fragView = getView();
 
         ((TextView) fragView.findViewById(R.id.plot)).setText(mItem.getPlot());
@@ -88,5 +87,18 @@ public class MovieDetailFragment extends Fragment {
         ((MovieInfoRow) fragView.findViewById(R.id.metascore)).setInfo(mItem.getMetascore());
         ((MovieInfoRow) fragView.findViewById(R.id.awards)).setInfo(mItem.getAwards());
         ((MovieInfoRow) fragView.findViewById(R.id.country)).setInfo(mItem.getCountry());
+    }
+
+    // ----- Server.DetailsCallback -------------------------------------------
+
+    @Override
+    public void setMovieDetails(Movie movie) {
+        this.mItem = movie;
+        populateView();
+    }
+
+    @Override
+    public void setRequestError(Throwable t) {
+        // TODO: treat error
     }
 }
